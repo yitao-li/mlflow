@@ -1,4 +1,5 @@
 #' @include tracking-globals.R
+#' @include tracking-utils.R
 NULL
 
 # Translate metric to value to safe format for REST.
@@ -353,32 +354,7 @@ mlflow_search_runs <- function(filter = NULL,
 #'
 #' @export
 mlflow_list_artifacts <- function(path = NULL, run_id = NULL, client = NULL) {
-  run_id <- resolve_run_id(run_id)
-  client <- resolve_client(client)
-
-  response <-   mlflow_rest(
-    "artifacts", "list",
-    client = client, verb = "GET",
-    query = list(
-      run_uuid = run_id,
-      run_id = run_id,
-      path = path
-    )
-  )
-
-  message(glue::glue("Root URI: {uri}", uri = response$root_uri))
-
-  files_list <- if (!is.null(response$files)) response$files else list()
-  files_list <- purrr::map(files_list, function(file_info) {
-    if (is.null(file_info$file_size)) {
-      file_info$file_size <- NA
-    }
-    file_info
-  })
-  files_list %>%
-    purrr::transpose() %>%
-    purrr::map(unlist) %>%
-    tibble::as_tibble()
+  # TODO
 }
 
 mlflow_set_terminated <- function(status, end_time, run_id, client) {
@@ -404,28 +380,12 @@ mlflow_set_terminated <- function(status, end_time, run_id, client) {
 #' @param path Relative source path to the desired artifact.
 #' @export
 mlflow_download_artifacts <- function(path, run_id = NULL, client = NULL) {
-  run_id <- resolve_run_id(run_id)
-  client <- resolve_client(client)
-  result <- mlflow_cli(
-    "artifacts", "download",
-    "--run-id", run_id,
-    "--artifact-path", path,
-    echo = FALSE,
-    stderr_callback = function(x, p) {
-      if (grepl("FileNotFoundError", x)) {
-        stop(
-          gsub("(.|\n)*(?=FileNotFoundError)", "", x, perl = TRUE),
-          call. = FALSE
-        )
-      }
-    },
-    client = client
-  )
-  gsub("\n", "", result$stdout)
+  # TODO:
 }
 
 # ' Download Artifacts from URI.
 mlflow_download_artifacts_from_uri <- function(artifact_uri, client = mlflow_client()) {
+  # TODO: don't need to run mlflow_cli in all cases
   result <- mlflow_cli("artifacts", "download", "-u", artifact_uri, echo = FALSE, client = client)
   gsub("\n", "", result$stdout)
 }
@@ -479,30 +439,7 @@ mlflow_list_run_infos <- function(run_view_type = c("ACTIVE_ONLY", "DELETED_ONLY
 #'
 #' @export
 mlflow_log_artifact <- function(path, artifact_path = NULL, run_id = NULL, client = NULL) {
-  c(client, run_id) %<-% resolve_client_and_run_id(client, run_id)
-  artifact_param <- NULL
-  if (!is.null(artifact_path)) artifact_param <- "--artifact-path"
-
-  if (as.logical(fs::is_file(path))) {
-    command <- "log-artifact"
-    local_param <- "--local-file"
-  } else {
-    command <- "log-artifacts"
-    local_param <- "--local-dir"
-  }
-
-  mlflow_cli("artifacts",
-             command,
-             local_param,
-             path,
-             artifact_param,
-             artifact_path,
-             "--run-id",
-             run_id,
-             client = client
-  )
-
-  invisible(mlflow_list_artifacts(run_id = run_id, path = artifact_path, client = client))
+  # TODO
 }
 
 # Record logged model metadata with the tracking server.

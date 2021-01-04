@@ -34,13 +34,14 @@ Imports:
     purrr,
     reticulate,
     rlang (>= 0.2.0),
+    R6,
     swagger,
     tibble (>= 2.0.0),
     withr,
     xml2,
     yaml,
     zeallot
-Suggests: 
+Suggests:
   covr,
   carrier,
   keras,
@@ -50,7 +51,7 @@ Suggests:
   xgboost,
   h2o
 RoxygenNote: 7.1.1
-Collate: 
+Collate:
     'cli.R'
     'databricks-utils.R'
     'globals.R'
