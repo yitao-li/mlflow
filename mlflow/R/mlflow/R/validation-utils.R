@@ -24,3 +24,9 @@ validate_artifact_path <- function(path) {
     stop("Invalid artifact path: '", path, "'. ", bad_path_msg(path))
   }
 }
+
+validate_db_type_string <- function(db_type) {
+  if (!db_type %in% .globals$DATABASE_ENGINES) {
+    stop("Invalid databse engine: '", db_type, "'")
+  }
+}

@@ -1,3 +1,4 @@
+#' @include artifact-repository-registry.R
 #' @include tracking-globals.R
 #' @include tracking-utils.R
 NULL
@@ -354,7 +355,7 @@ mlflow_search_runs <- function(filter = NULL,
 #'
 #' @export
 mlflow_list_artifacts <- function(path = NULL, run_id = NULL, client = NULL) {
-  # TODO
+  get_artifact_repository(path)$list_artifacts(path, run_id, client)
 }
 
 mlflow_set_terminated <- function(status, end_time, run_id, client) {
@@ -380,14 +381,12 @@ mlflow_set_terminated <- function(status, end_time, run_id, client) {
 #' @param path Relative source path to the desired artifact.
 #' @export
 mlflow_download_artifacts <- function(path, run_id = NULL, client = NULL) {
-  # TODO:
+  get_artifact_repository(path)$download_artifacts(path, run_id, client)
 }
 
 # ' Download Artifacts from URI.
 mlflow_download_artifacts_from_uri <- function(artifact_uri, client = mlflow_client()) {
-  # TODO: don't need to run mlflow_cli in all cases
-  result <- mlflow_cli("artifacts", "download", "-u", artifact_uri, echo = FALSE, client = client)
-  gsub("\n", "", result$stdout)
+  get_artifact_repository(artifact_uri)$download_artifacts(artifacts_uri, run_id, client)
 }
 
 #' List Run Infos

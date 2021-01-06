@@ -122,3 +122,4 @@ LocalArtifactRepository <- R6::R6Class("LocalArtifactRepository",
     }
     artifact_dir = NA_character_
   )
+)
